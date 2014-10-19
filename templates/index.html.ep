@@ -1,0 +1,22 @@
+% layout 'default';
+
+    
+        <div class="row">
+            <div class="col-sm-9">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <h3>Welcome to Worldcoin Securities Exchange</h3>
+                        <p>The Worldcoin Securities Exchange (WSE) is the premier exchange for Worldcoin only securities. You will find companies listing
+                        bonds and stocks here available to be traded with anyone in the world.</p>
+                        <p>Some other intro text.  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante.</p>
+                        
+                    </div>
+                    <div class="col-sm-12">
+                    <h3>Recent News</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-3">
+                <h4>Recent Dividends</h4>
+            </div>
+        </div>

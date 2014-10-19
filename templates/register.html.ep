@@ -1,0 +1,43 @@
+% layout 'default';
+            <div class="row">
+                <div class="col-sm-9">
+                    <div class="well col-sm-12">
+                        <h3>Register</h3>
+                        %= form_for url_for('register_submit') => (method => 'POST', id => 'register_form', class=>'form') => begin
+                            <div class="form-group">
+                                %= label_for username => 'Username', class => 'control-label sr-only'
+                                %= text_field 'username', placeholder =>'Username', class => 'form-control'
+                            </div>
+                            <div class="form-group">
+                                %= label_for password1 => 'Password', class => 'control-label sr-only'
+                                %= password_field 'password1', placeholder => 'Password', class => 'form-control'
+                            </div>
+                            <div class="form-group">
+                                %= label_for password2 => 'Password', class => 'control-label sr-only'
+                                %= password_field 'password2', title => 'Retype Password', placeholder => 'Retype Password', class => 'form-control'
+                            </div>
+                            <div class="form-group">
+                                %= label_for email => 'Email Address', class => 'control-label sr-only'
+                                %= text_field 'email', placeholder => 'Email', class => 'form-control'
+                            </div>
+                            <div class="form-group">
+                                %= label_for password_reset_question => 'Password Reset Question', class => 'control-label'
+                                <br />
+                                <select name="password_reset_question">
+                                    % foreach (@{$password_reset_questions}){
+                                        <option value="<%= $_->{'id'} %>"><%= $_->{'question'} %></option>
+                                    % }
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                %= label_for password_reset_answer => 'Password Reset Answer', class => 'control-label'
+                                %= text_field 'password_reset_answer' => placeholder => 'Answer', class => 'form-control'
+                            </div>
+                            <button type="submit" class="btn btn-default">Register</button>
+                        %= end
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <h4>Recent Dividends</h4>
+                </div>
+            </div>

@@ -1,0 +1,62 @@
+%layout 'default';
+
+            <div class="row">
+                <div class="col-sm-9">
+                    <div class="col-sm-12" style="margin-bottom: 10px;">
+                        <ul class="nav nav-pills" id="profile_navs" role="tablist">
+                            <li class="active"><a href="#unapproved_securities" role="tab" data-toggle="tab">Unapproved Securities</a></li>
+                            <li><a href="#site_config" role="tab" data-toggle="tab">Site Config</a></li>
+                        </ul>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12">
+                        </div>
+                    </div>
+                    <div class="col-sm-12 tab-content">
+                        <div class="col-sm-12 active tab-pane" id="unapproved_securities">
+                            <table class="table table-condensed">
+                                <thead>
+                                    <th>Name</th>
+                                    <th>Symbol</th>
+                                    <th>Action</th>
+                                </thead>
+                                <tbody>
+                                % foreach (@{$unapproved_securities}){
+                                    <tr>
+                                        <td><%= $_->{'name'} %></td>
+                                        <td><%= $_->{'symbol'} %></td>
+                                        <td><button type="button" class="btn btn-success approve" id="<%= $_->{'id'} %>">Approve</button> <button type="button" class="btn btn-danger decline" id="<%= $_->{'id'} %>">Decline</button></td>
+                                    </tr>
+                                % }
+                                </tbody>
+                            </table>
+                            <ul class="list_unstyled">
+                            
+                            </ul>
+                        </div>
+                        <div class="col-sm-12 tab-pane" id="site_config">
+                            %= label_for site_name => 'Site Name', class => 'control-label'
+                            <div class="input-group">
+                                <input type="text" class="form-control" name="site_name" placeholder="<%= $site_config->{'site_name'} || 'Website Name' %>">
+                                <span class="input-group-btn">
+                                    <button class="btn btn-default">Save</button>
+                                </span>
+                            </div>
+                            %= label_for hot_wallet_address => 'Hot Wallet Server Address', class => 'control-label'
+                            <div class="input-group">
+                                <input type="text" class="form-control" name="hot_wallet_address" placeholder="<%= $site_config->{'hot_wallet_address'} || 'Enter Hot Wallet Server IP or FQDN' %>">
+                                <span class="input-group-btn">
+                                    <button class="btn btn-default">Save</button>
+                                </span>
+                            </div>
+                            %= label_for database_server_address => 'Database Server Address', class => 'control-label'
+                            <div class="input-group">
+                                <input type="text" class="form-control" name="database_server_address" placeholder="<%= $site_config->{'database_server_address'} || 'Database Server IP or FQDN' %>">
+                                <span class="input-group-btn">
+                                    <button class="btn btn-default">Save</button>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>

@@ -1,0 +1,33 @@
+.tab-content {
+    border-left: 1px solid #ddd;
+    border-right: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+    border-radius: 0px 0px 5px 5px;
+    padding: 10px;
+}
+
+.nav-tabs {
+    margin-bottom: 0;
+}
+
+.note_heading{
+    font-weight: bold;
+    display: inline-block;
+    width: 100px;
+    text-align: right;
+    margin-right: 5px;
+}
+
+th{
+    text-align: center !important;
+}
+
+.order_div{
+    height: 175px;
+    overflow: auto;
+}
+
+.top_div{
+    height: 250px;
+    overflow: auto;
+}

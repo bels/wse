@@ -1,0 +1,22 @@
+% layout 'default';
+            <div class="row">
+                <div class="col-sm-9">
+                    <div class="well col-sm-12">
+                        <h3>Login</h3>
+                        %= form_for url_for('auth') => (method => 'POST', id => 'signin_form', class=>'col-sm-12', role => 'form') => begin
+                            <div class="form-group">
+                                %= label_for username => 'Username', class => 'control-label sr-only'
+                                %= text_field 'username', placeholder => 'Username', class => 'form-control'
+                            </div>
+                            <div class="form-group">
+                                %= label_for password => 'Password', class => 'control-label sr-only'
+                                %= password_field 'password', placeholder => 'Password', class => 'form-control'
+                            </div>
+                                <button type="submit" class="btn btn-default">Sign In</button>
+                        %= end
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <h4>Recent Dividends</h4>
+                </div>
+            </div>

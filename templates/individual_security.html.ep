@@ -1,0 +1,311 @@
+%layout 'default';
+% content_for graph_javascript => begin
+    <script type="text/javascript">
+		window.ohlc = [
+		% foreach (@{$historical_prices}){
+			['<%= $_->{'date'} %>',<%= $_->{'open'} %>,<%= $_->{'hi'} %>,<%= $_->{'low'} %>,<%= $_->{'close'} %>],
+		% }
+		]
+	</script>
+    <script type="text/javascript">
+        $(document).ready(function(){
+            var plot = $.jqplot('graph',[ohlc],{
+                seriesDefaults: {yaxis: 'y2axis'},
+                axes: {
+                    xaxis: {
+                        renderer: $.jqplot.DateAxisRenderer,
+                        tickOptions:{formatString: '%b %e'},
+                        min: "<%= minus_one_day($historical_prices->[0]->{'date'}) %>",
+                        max: "<%= add_one_day($historical_prices->[$#{$historical_prices}]->{'date'}) %>",
+                    },
+                    y2axis: {
+                        tickOptions: {formatString: '%.2f WDC'}
+                    }
+                },
+                series: [
+                    {
+                        renderer: $.jqplot.OHLCRenderer,
+                        rendererOptions: { candleStick: true}
+                    }
+                ],
+                highlighter: {
+                    show: true,
+                    showMarker: false,
+                    tooltipAxes: 'xy',
+                    yvalues: 4,
+                    formatString:'<table class="jqplot-highlighter"> \
+                        <tr><td>date:</td><td>%s</td></tr> \
+                        <tr><td>open:</td><td>%s</td></tr> \
+                        <tr><td>hi:</td><td>%s</td></tr> \
+                        <tr><td>low:</td><td>%s</td></tr> \
+                        <tr><td>close:</td><td>%s</td></tr></table>'
+                    }
+                });
+        });
+    </script>
+% end
+	<div class="row">
+		<div class="col-sm-12">
+			<ul class="nav nav-tabs" id="profile_navs" role="tablist">
+			    <li class="active"><a href="#graph" role="tab" data-toggle="tab">Historical Pricing</a></li>
+			    <li><a href="#overview" role="tab" data-toggle="tab">Company Overview</a></li>
+			    <li><a href="#dividend_history" role="tab" data-toggle="tab">Dividend History</a></li>
+			    <li><a href="#notes" role="tab" data-toggle="tab">Recent Notes</a></li>
+				<% if ($security_overview->{'owner'} eq $self->session->{'id'}){ %><li><a href="#add_note" role="tab" data-toggle="tab">Add Note To Investors</a></li><% } %>
+				<% if ($security_overview->{'owner'} eq $self->session->{'id'}){ %><li><a href="#distribute_dividend" role="tab" data-toggle="tab">Distribute Dividend</a></li><% } %>
+			</ul>
+			<div class="col-sm-12 tab-content">
+				<div class="tab-pane active" id="graph" style="width: 1100px; height: 300px; position: relative">
+				
+				</div>
+				<div class="tab-pane top_div" id="overview">
+                    <table class="table-condensed">
+                        <tr>
+                            <td class="text-right"><strong>Symbol:</strong></td>
+                            <td><%= $security_overview->{'symbol'} %></td>
+                        </tr>
+                        <tr>
+                            <td class="text-right"><strong>Name:</strong></td>
+                            <td><%= $security_overview->{'name'} %></td>
+                        </tr>
+                        <tr>
+                            <td class="text-right"><strong>Owner:</strong></td>
+                            <td><%= $security_overview->{'owner'} %></td>
+                        </tr>
+                        <tr>
+                            <td class="text-right"><strong>Type:</strong></td>
+                            <td><%= $security_overview->{'type'} %></td>
+                        </tr>
+                        <tr>
+                            <td class="text-right"><strong>Total Shares:</strong></td>
+                            <td><%= $security_overview->{'number_of_shares'} %></td>
+                        </tr>
+                        <tr>
+                            <td class="text-right"><strong>Date Approved:</strong></td>
+                            <td><%= $security_overview->{'date_approved'} %></td>
+                        </tr>
+                        <tr>
+                            <td class="text-right"><strong>Distribution Schedule:</strong></td>
+                            <td><%= $security_overview->{'distribution_schedule'} %></td>
+                        </tr>
+                        <tr>
+                            <td class="text-right"><strong>Description:</strong></td>
+                            <td><%= $security_overview->{'description'} %></td>
+                        </tr>
+                        <tr>
+                            <td class="text-right"><strong>Contract:</strong></td>
+                            <td><%= $security_overview->{'contract'} %></td>
+                        </tr>
+                    </table>
+				</div>
+				<div class="tab-pane top_div" id="dividend_history">
+					<table class="table table-condensed text-center">
+						<thead>
+							<tr>
+								<th>Date Issued</th>
+								<th>Price</th>
+								<th>Number of Shares Paid</th>
+							</tr>
+						</thead>
+						<tbody>
+					% foreach (@{$distribution_history}){
+							<tr>
+								<td><%= $_->{'date_issued'} %></td>
+								<td><%= $_->{'amount_per_share'} %></td>
+								<td><%= $_->{'shares_paid'} %></td>
+							</tr>
+					% }
+						</tbody>
+					</table>
+				</div>
+				<div class="tab-pane top_div" id="notes">
+					% foreach (@{$security_notes}){
+						<span class="note_heading">Subject</span><%= $_->{'note_title'} %>
+						<br />
+						<span class="note_heading">Date</span><%= trim_milliseconds($_->{'created'}) %>
+						<br />
+						%= $_->{'note'}
+                        <hr />
+					%}
+				</div>
+				<% if ($security_overview->{'owner'} eq $self->session->{'id'}){ %>
+				<div class="tab-pane top_div" id="add_note">
+					%= form_for url_for('add_note') => (method => 'POST', id => 'add_note_form', class=>'form-horizontal', role=>'form') => begin
+					<input type="hidden" name="id" value="<%= $security_id %>">
+					<div class="input-group">
+						%= label_for title => 'Title', class => 'control-label'
+						%= text_field 'title', placeholder => 'Note Title', class => 'form-control'
+					</div>
+					%= text_area 'add_note', rows => 9, placeholder => 'Note', class => 'form-control'
+					<button type="submit" class="btn btn-success center-block" <% if($self->session->{'logged_in'} != 1){ %>disabled<% } %>>Add Note</button>
+					%= end
+				</div>
+				<% } %>
+				<% if ($security_overview->{'owner'} eq $self->session->{'id'}){ %>
+                <p>Last Dividend Issued: <%= $last_issued_dividend %> Your Total WDC: <%= $wdc || 0 %> <br />
+                    %= form_for url_for('issue_dividend') => (method => 'POST', id => 'issue_dividend_form', role=> 'form') => begin
+                    <input type="hidden" name="security_id" value="<%= $security_id %>">
+                    <input type="hidden" name="total_investors" value="<%= $total_investors %>">
+                    %= text_field 'dividend_amount', placeholder => 'Dividend Amount Per Share', class => 'form-control'
+                    <button type="button" class="btn btn-success">Issue Dividend</button>
+                    %= end
+                </p>
+				<div class="tab-pane top_div" id="distribute_dividend">
+                    <h3>Total Investors <small><%= $total_investors %></small></h3>
+					<table class="table table-condensed text-center">
+						<thead>
+							<tr>
+								<th>Investor Public ID</th>
+								<th></th>
+							</tr>
+						</thead>
+						<tbody>
+					% foreach my $investor (@{$investors}){
+							<tr>
+								<td><% $investor->{'public_id'} %></td>
+								<td><!--<button type="button" class="btn btn-success">Resend Dividend</button>--></td>
+							</tr>
+					% }
+						</tbody>
+					</table>
+				</div>
+				<% } %>
+			</div>
+		</div>
+	</div>
+	<div class="row" style="margin-top: 10px;">
+		<div class="col-sm-5 well">
+			<strong>Buy</strong> Total WDC: <a href="#" id="available_wdc_link"><%= $wdc || 0 %></a>
+            %= form_for url_for('post_buy') => (method => 'POST', id => 'buy_form', class=>'form-horizontal', role => 'form') => begin
+                <div class="form-group">
+                    %= label_for amount => 'Amount', class => 'col-sm-4 control-label'
+                    <div class="col-sm-8">
+                        %= text_field 'amount', placeholder => 'Amount To Buy', class => 'form-control input-sm', id => 'amount_buy'
+                    </div>
+                </div>
+                <div class="form-group">
+                    %= label_for price_per => 'Price Per', class => 'col-sm-4 control-label'
+                    <div class="col-sm-8">
+                        %= text_field 'price_per', placeholder => 'Price Per', class => 'form-control input-sm', id => 'price_per_buy'
+                    </div>
+                </div>
+                <div class="form-group">
+                    %= label_for total_sell => 'Total', class => 'col-sm-4 control-label'
+                    <div class="col-sm-8">
+                        <input class="form-control input-sm" id="total_buy" type="text" name="total_buy" readonly>
+                    </div>
+                </div>
+                <input type="hidden" name="security_id" value="<%= $security_id %>">
+                <button type="submit" class="btn btn-success center-block" <% if($self->session->{'logged_in'} != 1){ %>readonly<% } %>>Place Order</button>
+            %= end
+            <div class="order_div">
+                <table class="table table-condensed table-striped text-center" id="buy_table">
+                    <thead>
+                        <th>Price</th>
+                        <th>Quantity</th>
+                        <th>Total</th>
+                    </thead>
+                    <tbody>
+			% foreach (@{$open_buys}){
+                        <tr>
+                            <td class="buy_prices"><%= $_->{'price'} %></td>
+                            <td><%= $_->{'number_of_shares'} %></td>
+                            <td><%= $_->{'price'} * $_->{'number_of_shares'} %></td>
+                        </tr>
+			% }
+                    </tbody>
+                </table>
+            </div>
+		</div>
+		<div class="col-sm-5 col-sm-offset-2 well">
+			<strong>Sell</strong> Available Shares: <a href="#" id="available_shares_link"><%= $shares || 0 %></a>
+            %= form_for url_for('post_sell') => (method => 'POST', id => 'sell_form', class=>'form-horizontal', role => 'form') => begin
+                <div class="form-group">
+                    %= label_for amount => 'Amount', class => 'col-sm-4 control-label'
+                    <div class="col-sm-8">
+                        %= text_field 'amount', placeholder => 'Amount To Sell', class => 'form-control input-sm', id => 'amount_sell'
+                    </div>
+                </div>
+                <div class="form-group">
+                    %= label_for price_per => 'Price Per', class => 'col-sm-4 control-label'
+                    <div class="col-sm-8">
+                        %= text_field 'price_per', placeholder => 'Price Per', class => 'form-control input-sm', id => 'price_per_sell'
+                    </div>
+                </div>
+                <div class="form-group">
+                    %= label_for total_sell => 'Total', class => 'col-sm-4 control-label'
+                    <div class="col-sm-8">
+                        <input class="form-control input-sm" id="total_sell" type="text" name="total_sell" readonly>
+                    </div>
+                </div>
+                <input type="hidden" name="security_id" value="<%= $security_id %>">
+                <button type="submit" class="btn btn-danger center-block" <% if($self->session->{'logged_in'} != 1){ %>readonly<% } %>>Place Order</button>
+            %= end
+            <div class="order_div">
+                <table class="table table-condensed table-striped text-center" id="sell_table">
+                    <thead>
+                        <th>Price</th>
+                        <th>Quantity</th>
+                        <th>Total</th>
+                    </thead>
+                    <tbody>
+			% foreach (@{$open_sells}){
+                        <tr>
+                            <td class="sell_prices"><%= $_->{'price'} %></td>
+                            <td><%= $_->{'number_of_shares'} %></td>
+                            <td><%= $_->{'price'} * $_->{'number_of_shares'} %></td>
+                        </tr>
+			% }
+                    </tbody>
+                </table>
+            </div>
+		</div>
+	</div>
+    % if($self->session->{'logged_in'} == 1){
+    <div class="row">
+        <div class="col-sm-12 well">
+            <h4>Your Open Trades</h4>
+            <table class="table table-condensed table-striped text-center" id="sell_table">
+                    <thead>
+                        <th>Price</th>
+                        <th>Quantity</th>
+                        <th>Total</th>
+                        <th></th>
+                    </thead>
+                    <tbody>
+			% foreach (@{$your_open_trades}){
+                        <tr>
+                            <td class="sell_prices"><%= $_->{'price'} %></td>
+                            <td><%= $_->{'number_of_shares'} %></td>
+                            <td><%= $_->{'price'} * $_->{'number_of_shares'} %></td>
+                            <td><button type="button" class="cancel_trade close" id="<%= $_->{'trade_id'} %>"><span aria-hidden="true">&times;</span><span class="sr-only">Cancel Trade</span></button></td>
+                        </tr>
+			% }
+                    </tbody>
+                </table>
+        </div>
+    </div>
+    % }
+	<div class="row">
+		<div class="col-sm-12 well text-center" style="height: 400px; overflow: auto;">
+			<h3>Recent Trades</h3>
+            <table class="table table-condensed">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Price</th>
+                        <th>Number Of Shares</th>
+                    </tr>
+                </thead>
+                <tbody>
+			% foreach (@{$recent_trades}){
+                    <tr>
+                        <td><%= trim_milliseconds($_->{'execution_time'}) %></td>
+                        <td><%= $_->{'price'} %></td>
+                        <td><%= $_->{'shares'} %></td>
+                    </tr>
+			% }
+                </tbody>
+            </table>
+		</div>
+	</div>

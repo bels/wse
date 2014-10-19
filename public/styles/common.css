@@ -1,0 +1,16 @@
+.wse-header{
+    background-color: #027CCC;
+}
+
+header a{
+    color: #FFF !important;
+}
+
+header a:hover{
+    background-color: #FFF !important;
+    color: #027CCC !important;
+}
+
+header input{
+    width: 150px !important;
+}

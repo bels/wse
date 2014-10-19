@@ -1,0 +1,60 @@
+[Sun Sep 14 17:22:07 2014] [info] Listening at "http://*:8080".
+[Sun Sep 14 17:22:07 2014] [info] Manager 3997 started.
+[Sun Sep 14 17:22:07 2014] [info] Creating process id file "/home/bels/Documents/wse/script/hypnotoad.pid".
+[Sun Sep 14 17:25:13 2014] [error] DBD::Pg::st execute failed: ERROR:  syntax error at or near "$1"
+LINE 1: UPDATE account_profile SET $1 = $2 WHERE account = $3
+                                   ^
+QUERY:  UPDATE account_profile SET $1 = $2 WHERE account = $3
+CONTEXT:  PL/pgSQL function update_account(text,text,uuid) line 6 at EXECUTE statement at /home/bels/Documents/wse/script/../lib/Wse/Account.pm line 112.
+
+[Mon Sep 15 17:29:03 2014] [error] DBD::Pg::st execute failed: ERROR:  syntax error at or near "$1"
+LINE 1: UPDATE account_profile SET $1 = $2 WHERE account = $3
+                                   ^
+QUERY:  UPDATE account_profile SET $1 = $2 WHERE account = $3
+CONTEXT:  PL/pgSQL function update_account(text,text,uuid) line 6 at EXECUTE statement at /home/bels/Documents/wse/script/../lib/Wse/Account.pm line 112.
+
+[Thu Sep 25 10:41:38 2014] [info] Listening at "http://*:8080".
+[Thu Sep 25 10:41:38 2014] [info] Manager 2409 started.
+[Thu Sep 25 10:41:38 2014] [info] Creating process id file "/home/bels/Documents/wse/script/hypnotoad.pid".
+[Thu Sep 25 10:44:20 2014] [error] DBD::Pg::st execute failed: ERROR:  column "field" does not exist
+LINE 1: SELECT field = 'pswhash'
+               ^
+QUERY:  SELECT field = 'pswhash'
+CONTEXT:  PL/pgSQL function update_account(text,text,uuid) line 3 at IF at /home/bels/Documents/wse/script/../lib/Wse/Account.pm line 112.
+
+[Thu Sep 25 10:45:55 2014] [error] DBD::Pg::st execute failed: ERROR:  there is no parameter $2
+LINE 1: UPDATE account_profile SET withdraw_address = $2 WHERE accou...
+                                                      ^
+QUERY:  UPDATE account_profile SET withdraw_address = $2 WHERE account = $3
+CONTEXT:  PL/pgSQL function update_account(text,text,uuid) line 6 at EXECUTE statement at /home/bels/Documents/wse/script/../lib/Wse/Account.pm line 112.
+
+[Thu Sep 25 10:54:15 2014] [error] DBD::Pg::st execute failed: ERROR:  there is no parameter $2
+LINE 1: UPDATE account_profile SET withdraw_address = $2 WHERE accou...
+                                                      ^
+QUERY:  UPDATE account_profile SET withdraw_address = $2 WHERE account = $3
+CONTEXT:  PL/pgSQL function update_account(text,text,uuid) line 6 at EXECUTE statement at /home/bels/Documents/wse/script/../lib/Wse/Account.pm line 112.
+
+[Thu Sep 25 11:09:51 2014] [error] DBD::Pg::st execute failed: ERROR:  there is no parameter $2
+LINE 1: UPDATE account_profile SET withdraw_address = $2 WHERE accou...
+                                                      ^
+QUERY:  UPDATE account_profile SET withdraw_address = $2 WHERE account = $3
+CONTEXT:  PL/pgSQL function update_account(text,text,uuid) line 6 at EXECUTE statement at /home/bels/Documents/wse/script/../lib/Wse/Account.pm line 112.
+
+[Thu Sep 25 11:21:07 2014] [info] Listening at "http://*:8080".
+[Thu Sep 25 11:21:07 2014] [info] Manager 2319 started.
+[Thu Sep 25 11:21:07 2014] [info] Creating process id file "/home/bels/Documents/wse/script/hypnotoad.pid".
+[Thu Sep 25 11:21:53 2014] [error] DBD::Pg::st execute failed: ERROR:  there is no parameter $2
+LINE 1: UPDATE account_profile SET withdraw_address = $2 WHERE accou...
+                                                      ^
+QUERY:  UPDATE account_profile SET withdraw_address = $2 WHERE account = $3
+CONTEXT:  PL/pgSQL function update_account(text,text,uuid) line 6 at EXECUTE statement at /home/bels/Documents/wse/script/../lib/Wse/Account.pm line 112.
+
+[Thu Sep 25 11:27:05 2014] [info] Listening at "http://*:8080".
+[Thu Sep 25 11:27:05 2014] [info] Manager 2441 started.
+[Thu Sep 25 11:27:05 2014] [info] Creating process id file "/home/bels/Documents/wse/script/hypnotoad.pid".
+[Thu Sep 25 11:27:10 2014] [error] DBD::Pg::st execute failed: ERROR:  there is no parameter $2
+LINE 1: UPDATE account_profile SET withdraw_address = $2 WHERE accou...
+                                                      ^
+QUERY:  UPDATE account_profile SET withdraw_address = $2 WHERE account = $3
+CONTEXT:  PL/pgSQL function update_account(text,text,uuid) line 6 at EXECUTE statement at /home/bels/Documents/wse/script/../lib/Wse/Account.pm line 112.
+

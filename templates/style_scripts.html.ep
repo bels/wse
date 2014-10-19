@@ -1,0 +1,11 @@
+	<link rel="stylesheet" href="/styles/bootstrap.min.css">
+	<link rel="stylesheet" href="/styles/common.css" type="text/css" media="screen">
+	% foreach my $stylesheet (@{$styles}){
+	<link rel="stylesheet" href="/styles/<%= $stylesheet %>" type="text/css" media="screen">
+	% }
+	<script type="text/javascript" src="/javascripts/jquery.js"></script>
+    <script type="text/javascript" src="/javascripts/bootstrap.min.js"></script>
+	<script type="text/javascript" src="/javascripts/common.js"></script>
+	% foreach my $js (@{$javascripts}){
+    <script type="text/javascript" src="/javascripts/<%= $js %>"></script>
+	% }

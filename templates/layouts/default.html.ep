@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title><%= title %></title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="">
+        <meta name="author" content="">
+
+	%= include 'style_scripts'
+    %= content_for 'graph_javascript'
+    </head>
+    <body>
+        <header class="wse-header" role="banner">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main_nav">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="/">WSE</a>
+                </div>
+                <nav class="collapse navbar-collapse bs-navbar-collapse" id="main_nav" role="navigation">
+                    <ul class="nav navbar-nav">
+                        <li><a href="<%= url_for 'securities'  %>" <% if(stash('active_page') eq 'securities'){ %> class="active" <% }%>>Securities</a></li>
+                        <li><a href="<%= url_for 'about_worldcoin'  %>" <% if(stash('active_page') eq 'about_worldcoin'){ %> class="active" <% }%>>About Worldcoin</a></li>
+                        <li><a href="<%= url_for 'faq' %>" <% if(stash('active_page') eq 'faq'){ %> class="active" <% }%>>FAQ</a></li>
+                        <li><a href="<%= url_for 'support' %>" <% if(stash('active_page') eq 'support'){ %> class="active" <% }%>>Support</a></li>
+                    </ul>
+                    <ul class="nav navbar-nav navbar-right">
+                    <% if($self->session->{'logged_in'} == 1){ %>
+                        <li><a href="<%= url_for 'profile' %>">Logged in as <%= $self->session->{'username'} %></a></li>
+                        <li><a href="<%= url_for 'logout' %>">Logout</a></li>
+                    % } else {
+                        %= form_for url_for('auth') => (method => 'POST', id => 'signin_form', class=>'navbar-form navbar-right', role => 'form') => begin
+                            <div class="form-group">
+                                %= label_for username => 'Username', class => 'control-label sr-only'
+                                %= text_field 'username', placeholder => 'Username', class => 'form-control'
+                                %= label_for password => 'Password', class => 'control-label sr-only'
+                                %= password_field 'password', placeholder => 'Password', class => 'form-control'
+                                <button type="submit" class="btn btn-default">Sign In</button>
+                            </div>
+                        %= end
+                        <li><a href="<%= url_for 'register' %>" <% if(stash('active_page') eq 'register'){ %> class="active" <% }%>>Register</a></li>
+                    % }
+                    </ul>
+                </nav>
+            </div>
+        </header>
+        <div class="row">
+            <div class="col-sm-12">
+                &nbsp;
+            </div>
+        </div>
+        <div class="container">
+        % my $errors = $self->validator->get_errors;
+        % foreach my $error (keys %{$errors}){
+            <div data-alert class="col-sm-12 alert alert-danger alert-dismissable">
+                <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                %= $errors->{$error};
+                % $self->validator->clear_errors;
+            </div>
+        % }
+        % if(stash('error')){
+            <div data-alert class="col-sm-12 alert alert-danger alert-dismissable">
+                <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                %= stash('error');
+            </div>
+        % }
+        % if(stash('success')){
+            <div data-alert class="col-sm-12 alert alert-success alert-dismissable">
+                <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                %= stash('success');
+            </div>
+        % }
+        % if(flash('error')){
+            <div data-alert class="col-sm-12 alert alert-danger alert-dismissable">
+                <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                %= flash('error');
+            </div>
+        % }
+        % if(flash('success')){
+            <div data-alert class="col-sm-12 alert alert-success alert-dismissable">
+                <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                %= flash('success');
+            </div>
+        % }
+            <%= content %>
+        </div>
+    </body>
+</html>

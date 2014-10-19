@@ -1,0 +1,183 @@
+%layout 'default';
+
+% my $portfolio_value = 0;
+            <div class="row">
+                <div class="col-sm-9">
+                    <div class="col-sm-12" style="margin-bottom: 10px;">
+                        <ul class="nav nav-pills" id="profile_navs" role="tablist">
+                            <li class="active"><a href="#holdings" role="tab" data-toggle="tab">Holdings</a></li>
+                            <li><a href="#deposit" role="tab" data-toggle="tab">Deposit WDC</a></li>
+                            <li><a href="#withdraw" role="tab" data-toggle="tab">Withdraw WDC</a></li>
+                            <li><a href="#settings" role="tab" data-toggle="tab">Settings</a></li>
+                            <li><a href="#create_security" role="tab" data-toggle="tab">Create Security</a></li>
+                        </ul>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12">
+                        </div>
+                    </div>
+                    <div class="col-sm-12 tab-content">
+                        <div class="col-sm-12 active tab-pane" id="holdings">
+                            <table class="table table-striped table-condensed table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Symbol</th>
+                                        <th>Security</th>
+                                        <th># of Shares</th>
+                                        <th>Price Per Share</th>
+                                        <th>Total Value</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>WDC</td>
+                                        <td>WDC</td>
+                                        <td><%= $account_overview->{'wdc'} %></td>
+                                        <td></td>
+                                        <td><%= $account_overview->{'wdc'} %></td>
+                                    </tr>
+                                    % foreach (@{$holdings}){
+                                    <tr>
+                                        <td><%= $_->{'symbol'} %></td>
+                                        <td><%= $_->{'security'} %></td>
+                                        <td><%= $_->{'number_of_shares'} %></td>
+                                        <td><%= $_->{'price'} %></td>
+                                        <td><%= $_->{'price'} * $_->{'number_of_shares'} %></td>
+                                        % $portfolio_value += $_->{'price'} * $_->{'number_of_shares'};
+                                    </tr>
+                                    %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="col-sm-12 tab-pane" id="deposit">
+                            <strong>Current WDC:</strong> <%= $account_overview->{'wdc'} %><br />
+                            <strong>Deposit Address:</strong> <%= $account_overview->{'deposit_address'} %><br />
+                        </div>
+                        <div class="col-sm-12 tab-pane" id="withdraw">
+                            <strong>Current WDC:</strong> <%= $account_overview->{'wdc'} %><br />
+                            <strong>Current Withdraw Address:</strong> <span id="withdraw_address"><%= $account_overview->{'withdraw_address'} %></span><br />
+                            <h4>Change Withdraw Address</h4>
+							%= form_for url_for('set_withdraw_address') => (method => 'POST', id => 'withdraw_address_form', class=>'form-horizontal', role => 'form') => begin
+								<div class="form-group">
+									<div class="input-group">
+										%= label_for new_withdraw_address => 'new_withdraw_address', class => 'control-label sr-only'
+										<input type="text" class="form-control" name="new_withdraw_address" id="new_withdraw_address" placeholder="New Withdraw Address">
+										<span class="input-group-btn">
+											<button class="btn btn-default">Save</button>
+										</span>
+									</div>
+								</div>
+							%= end
+                            <h4>Minimum Withdraw: 0.1 WDC</h4>
+							%= form_for url_for('withdraw') => (method => 'POST', id => 'withdraw_address_form', class=>'form-horizontal', role => 'form') => begin
+								<div class="form-group">
+									<div class="input-group">
+										%= label_for withdraw_amount => 'Withdraw', class => 'control-label sr-only'
+										<input type="hidden" name="withdraw_address" value="<%= $account_overview->{'withdraw_address'} %>">
+										<input type="text" class="form-control" name="withdraw_amount" id="withdraw_amount" placeholder="Withdraw Amount">
+										<span class="input-group-btn">
+											<button class="btn btn-default">Withdraw</button>
+										</span>
+									</div>
+								</div>
+							% end
+                        </div>
+                        <div class="col-sm-12 tab-pane" id="settings">
+							<h3>Email</h3>
+                            <strong>Email:</strong> <%= $account_overview->{'email'} %>
+                            <div class="input-group">
+                                %= label_for email => 'New Email', class => 'control-label sr-only'
+                                <input type="text" class="form-control" name="new_email_address" placeholder="New Email Address">
+                                <span class="input-group-btn">
+                                    <button class="btn btn-default">Save</button>
+                                </span>
+                            </div>
+							<hr />
+							<h3>Timezone Information</h3>
+                            <strong>Current Timezone:</strong> <%= $account_overview->{'time_zone'} %>
+							<br />
+							<strong>New Timezone:</strong> 
+                            <select name="timezone" id="timezone">
+                                <% for(0..24){ %>
+                                    <option value="<%= $_ - 12 %>"><%= $_ - 12 %></option>
+                                <% } %>
+                            </select>
+                            <hr />
+                            <h3>Change Password:</h3>
+                            %= form_for url_for('change_password') => (method => 'POST', id => 'create_password_form', class=>'form-horizontal', role => 'form') => begin
+                                <div class="form-group">
+                                    %= label_for change_password1 => 'Password', class => 'control-label sr-only'
+                                    <input type="text" class="form-control" name="change_password1" id="change_password1" placeholder="New Password">
+								</div>
+								<div class="form-group">
+									%= label_for change_password2 => 'Password Again', class => 'control-label sr-only'
+                                    <input type="text" class="form-control" name="change_password2" id="change_password2" placeholder="Retype New Password">
+								</div>
+								<button class="btn btn-default">Change</button>
+                            %= end
+                        </div>
+                        <div class="col-sm-12 tab-pane" id="create_security">
+                            <p>By creating this security you agree to give WSE .1% of your issued shares as payment for their services. This will happen automatically upon
+                            creation.</p>
+                            %= form_for url_for('create_security') => (method => 'POST', id => 'create_security_form', class=>'form-horizontal', role => 'form') => begin
+                                <div class="form-group">
+                                    %= label_for name => 'Security Name', class => 'col-sm-3 control-label'
+                                    <div class="col-sm-4">
+                                        %= text_field 'name', placeholder => 'Name Of Security', class => 'form-control'
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    %= label_for symbol => 'Security Symbol', class => 'col-sm-3 control-label'
+                                    <div class="col-sm-4">
+                                        %= text_field 'symbol', placeholder => 'Less than 4 letters', class => 'form-control'
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    %= label_for number_of_shares => 'Number Of Shares', class => 'col-sm-3 control-label'
+                                    <div class="col-sm-4">
+                                        %= text_field 'number_of_shares', placeholder => 'Total amount of shares to issue', class => 'form-control'
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    %= label_for distribution_schedule => 'Dividend Distribution Schedule', class => 'col-sm-3 control-label'
+                                    <div class="col-sm-4">
+                                        <select name="distribution_schedule" class="form-control">
+                                            % foreach (@{$distribution_schedule}) {
+                                            <option value="<%= $_->{'id'} %>"><%= $_->{'description'} %></option>
+                                            % }
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    %= label_for security_type => 'Security Type', class => 'col-sm-3 control-label'
+                                    <div class="col-sm-4">
+                                        <select name="security_type" class="form-control">
+                                            % foreach (@{$security_types}) {
+                                            <option value="<%= $_->{'id'} %>"><%= $_->{'description'} %></option>
+                                            % }
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    %= label_for description => 'Description', class => 'col-sm-3 control-label'
+                                    <div class="col-sm-9">
+                                        %= text_area 'description', rows => 3, placeholder => 'Description', class => 'form-control'
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    %= label_for contract => 'Contract', class => 'col-sm-3 control-label'
+                                    <div class="col-sm-9">
+                                        %= text_area 'contract', rows => 9, placeholder => 'Contract', class => 'form-control'
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn btn-success center-block" <% if($self->session->{'logged_in'} != 1){ %>disabled<% } %>>Submit Application</button>
+                            %= end
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <h4>Account Info</h4>
+                    Last login: <%= $self->trim_milliseconds($account_overview->{'last_login'}) %><br />
+                    Portfolio Value: <%= $account_overview->{'wdc'} + $portfolio_value %> WDC
+                </div>
+            </div>
